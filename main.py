@@ -3,12 +3,18 @@ import tensorflow as tf
 import torch
 
 
+def conv_layer(*args):
+	if len(args)==4:
+		return tf.keras.layers.Conv2D(args[0],args[1],strides=args[2],activation=args[3])
+	else:
+		return torch.nn.Conv2d(args[0], args[1], kernel_size=args[2])
+
 class LeNet_tf(tf.keras.Model):
 	def __init__(self):
 		super().__init__()
-		self.conv1 = tf.keras.layers.Conv2D(6,5,strides=1,activation='relu')
+		self.conv1 = conv_layer(6,5,1,'relu')
 		self.maxpool1 = tf.keras.layers.MaxPooling2D(pool_size=(2,2))
-		self.conv2 = tf.keras.layers.Conv2D(16,5,activation='relu')
+		self.conv2 = conv_layer(16,5,1,'relu')
 		self.maxpool2 = tf.keras.layers.MaxPooling2D(pool_size=(2,2))
 		self.flat = tf.keras.layers.Flatten()
 		self.dense1 = tf.keras.layers.Dense(120,activation='relu')
@@ -27,10 +33,10 @@ class LeNet_tf(tf.keras.Model):
 class LeNet_torch(torch.nn.Module):
 	def __init__(self):
 		super().__init__()
-		self.conv1 = torch.nn.Conv2d(1, 6, kernel_size=5)
+		self.conv1 = conv_layer(1,6,5)
 		self.relu1 = torch.nn.ReLU()
 		self.maxpool1 = torch.nn.MaxPool2d(2,2)
-		self.conv2 = torch.nn.Conv2d(6, 16, kernel_size=5)
+		self.conv2 = conv_layer(6,16,5)
 		self.relu2 = torch.nn.ReLU()
 		self.maxpool2 = torch.nn.MaxPool2d(2,2)
 		self.flatten = torch.nn.Flatten()
